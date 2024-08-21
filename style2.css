@@ -1,0 +1,21 @@
+.box{
+    margin: auto;
+    width: 60%;
+    border: 3px solid black;
+    padding: 10px;
+    height: 500px;
+  }
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 80px;
+    margin-bottom: 20px;
+    margin-left: 110px;
+}
+.details {
+    flex: 1;
+}
+.image {
+    margin-right: 120px;
+}        
