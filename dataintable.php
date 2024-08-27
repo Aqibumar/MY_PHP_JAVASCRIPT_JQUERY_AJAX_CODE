@@ -29,7 +29,7 @@ if(!isset($_SESSION['email'])) {
     <div align='center'> <a href="adddata.php" target="_blank"><button>Add Data In Table</button></a></div>
 
     <hr style="border-top: 8px solid grey;">
-    <table cellspacing='2px' cellpadding='2px' align="center" border= '1px solid black' style="margin-bottom: 50px;" >
+    <table class="table-bordered"  cellspacing='2px' cellpadding='2px' align="center" border= '1px solid black' style="margin-bottom: 50px;" >
         <tr>
             <th>ID</th>
             <th>Student Name</th>

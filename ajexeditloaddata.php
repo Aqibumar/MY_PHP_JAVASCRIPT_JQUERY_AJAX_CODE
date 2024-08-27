@@ -24,7 +24,7 @@ if ($result->num_rows > 0) {
       <input type='radio' name='gender' value='Other' $genderOtherChecked>Other <br>
 
        Date of Birth: <input type='date'  name='dob'value='{$row['dob']}' <br><br><br>
-       <img src='images/".$row['studentimg']."' alt='student_img' style='width: 40px;  height: 40px'>
+       <img src='images/".$row['studentimg']."' alt='student_img' style='width: 40px;  height: 40px' name='image'>
        <input type='file' name='img' name='img'><br>
      
        <h3>Enter Obtained Marks</h3>
@@ -40,4 +40,6 @@ if ($result->num_rows > 0) {
      </form>";
 
      echo $data;
+
 }
+?>

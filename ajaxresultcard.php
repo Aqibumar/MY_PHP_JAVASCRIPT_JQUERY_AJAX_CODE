@@ -14,22 +14,10 @@ if(!isset($_SESSION['email'])) {
     <title>Document</title>
 </head>
 <body class='box' bgcolor='#e6eaf'>
-    <div>
-    <div align='center'>
-    <h2>RESULT CARD</h2><hr>
-    </div>
-    <table border="2px solid black" align='center' style="width: 600px;">
-    <tr>
-    <th>Sr.No</th>
-    <th>Subject</th>
-    <th>Maximum Marks</th>
-    <th>Obtained Marks</th>
-    <th>Grade</th>
-</tr>
+    
     <?php
 
-    $student_id = $_GET['student_id'];
-
+    $student_id = $_POST["id"];
     include "connection.php";
     $sql= "SELECT students.studentimg,students.gender,students.age,students.dob,students.name,students.guardianname,resultcard.englishmarks
     ,resultcard.englishgrade,resultcard.mathmarks,resultcard.mathgrade,
@@ -47,35 +35,50 @@ if(!isset($_SESSION['email'])) {
             $mathgrade = calculateGrade($mathmarks); 
             $urdugrade = calculateGrade($urdumarks);
 
-            echo "<div class='container'>";
-            echo "<div class='details'>";
-            echo "<font size='3px'>";
-            echo "<b>Student Name:</b>". $row['name']."<br>";
-            echo "<b>Student Age:</b> " . $row['age'] . "<br>";
-            echo "<b>Student Gender:</b> " . $row['gender'] . "<br>";
-            echo "<b>Date Of Birth:</b> " . $row['dob'] . "<br>";
-            echo "</font>";
-            echo "</div>";
-            echo "<div class='image'>";
-            echo "<img src='images/" . $row['studentimg'] . "' alt='Student Image' width='70px' height='70px'>";
-            echo "</div>";
-            echo "</div>";
+ $data="<div>
+        <div align='center'>
+        <h2>RESULT CARD</h2><hr>
+        </div>
+          
+        <div class='container'>
+        <div class='details'>
+        <font size='3px'>
+        <b>Student Name:</b> {$row['name']}<br>
+        <b>Student Age:</b> {$row['age']}<br>
+        <b>Student Gender:</b> {$row['gender']}<br>
+        <b>Date Of Birth:</b> {$row['dob']}<br>
+        </font>
+        </div>
+        <div class='image'>
+        <img src='images/{$row['studentimg']}' alt='Student Image' width='70px' height='70px'>
+        </div>
+        </div>
+        <table border='2px solid black' align='center' style='width: 600px;'>
+        <tr>
+        <th>Sr.No</th>
+        <th>Subject</th>
+        <th>Maximum Marks</th>
+        <th>Obtained Marks</th>
+        <th>Grade</th>
+        </tr>
+        <tr>
+        <td>1<br>2<br>3</td>
+        <td>English<br>Math<br>Urdu</td>
+        <td>100<br>100<br>100</td>
+        <td>$englishmarks<br>$mathmarks<br>$urdumarks</td>
+        <td>$englishgrade<br>$mathgrade<br>$urdugrade</td>
+        </tr>
+        </table>
+        <table align='center' border='2px solid black' width='600px'>
+        <tr>
+        <th>Overall Marks:  $marks </th>
+        <th>Overall Grade:  $grade</th>
+        </tr>
+        </table><br><br><br><br><hr>
+        <div style='margin-top:25px;' align='center'><b>BOARD OF INTERMEDIATE & SECCONDARY EDUCATION</b></div>";
 
-            echo "<tr>";
-            echo "<td>1<br>2<br>3</td>";  
-            echo "<td>English<br>Math<br>Urdu</td>";
-            echo "<td>100<br>100<br>100</td>";
-            echo "<td>$englishmarks<br>$mathmarks<br>$urdumarks</td>";
-            echo "<td>$englishgrade<br>$mathgrade<br>$urdugrade</td>";
-            echo "</tr>";
-            echo "</table>";
-            echo "<table align='center' border='2px solid black' width='600px'>";
-            echo "<tr>
-            <th>Overall Marks:  $marks </th>
-            <th>Overall Grade:  $grade</th>
-            </tr>";
-            echo "</table>"."<br><br><br><br><hr>";
-            echo "<div style='margin-top:25px;' align='center'><b>BOARD OF INTERMEDIATE & SECCONDARY EDUCATION</b></div>";
+
+        echo $data;
             //---------Updating Data to database with Calculation-----------//
             if($row['grade'] || $row['marks'] || $row['englishgrade'] || $row['mathgrade'] || $row['urdugrade'] == null ){
                 mysqli_query($conn,"UPDATE resultcard set
@@ -87,6 +90,8 @@ if(!isset($_SESSION['email'])) {
                 where resultcard.result_id = '".$row['result_id']."'
                 "); 
                 }}
+
+
     //-----------------Functions......................//
     function calculateGrade($marks) {
         if ($marks >= 90) {

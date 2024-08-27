@@ -11,6 +11,7 @@ if(isset($_POST['logout'])){
     die();
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +19,8 @@ if(isset($_POST['logout'])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Index</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <link rel="stylesheet" href="style3.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="sty.css">
 </head>
 <body bgcolor="lightgrey" align="center">
 <div class="navbar" >
@@ -34,6 +36,7 @@ if(isset($_POST['logout'])){
 </div>
 </div>
 
+<!-- For Edit -->
 <div id="model">
   <div id="editform">
     <form id="edit" enctype="multipart/form-data"></form>
@@ -41,6 +44,7 @@ if(isset($_POST['logout'])){
   </div>
 </div>
 
+<!-- For ADD -->
 <button id="adddata" style="margin-top: 20px;">Add Data</button><hr>
 <div id="model2">
   <div id="addform">
@@ -49,14 +53,29 @@ if(isset($_POST['logout'])){
   </div>
 </div>
 
+<!-- For Viewing data in table -->
 <table id="tabledata" border="1px solidbllack" cellspacing="1px" cellpadding="1px" align="center" style="margin-top:20px; margin-bottom: 20px ;">
 </table>
 
+<!-- For view Button in table -->
+<div id="model3">
+  <div id="view">
+    <p id="viewpage"></p>
+    <div id="closebtn3">X</div>
+  </div>
+</div>
 
-
+<!-- For Resultcard Button in table -->
+<div id="model4">
+  <div id="resultcard">
+    <p id="resultcardpage"></p>
+    <div id="closebtn4">X</div>
+  </div>
+</div>
 
 <script>
     $(document).ready(function(){
+
       // -----TO Load Data WIth Ajex------ //
         function loaddata(){
             $.ajax({
@@ -72,29 +91,37 @@ if(isset($_POST['logout'])){
 
 
       // ----------TO Delete Data With Ajex ----------- //
+      
       $(document).on("click", ".deletebtn", function(){
-        if(confirm("Are sure you want to delete this record")){
-        var id = $(this).data("id");
-        $.ajax({
-          url:"ajexdelete.php",
-          type:"POST",
-          data:{id:id},
-          success: function(data){
-            if(data == 1 ){
-              $(this).closest("tr").fadeOut();
-              loaddata();
+        swal({
+       title: "Are you sure?",
+       text: "Once deleted, you will not be able to recover this record",
+       icon: "warning",
+       buttons: true,
+       dangerMode: true,
+       })
+        .then((willDelete) => {
+        if (willDelete) {
+           var id = $(this).data("id");
+            $.ajax({
+             url:"ajexdelete.php",
+             type:"POST",
+             data:{id:id},
+             success: function(data){
+              if(data == 1 ){
+                loaddata();
+             }
+        else{
+            alert("Failed To Delete Record")
             }
-            else{
-              alert("Failed To Delete Data")
-            }
-
           }
         })
-      }
+       swal("Deleted successfully",{
+      icon: "success",
+    });
+  }
+});
       })
-
-
-
      //---------------------------------------------To Edit and Update data with ajex-------------------------------------------//
     $(document).on("click", ".editbtn" , function(){
       $("#model").show();
@@ -122,6 +149,7 @@ if(isset($_POST['logout'])){
         processData: false,
         success: function(data){
           if(data==1){
+          swal("Edited!", "Data Has been edited successfully", "success");
           $("#model").hide();
           loaddata()
           }
@@ -136,12 +164,10 @@ if(isset($_POST['logout'])){
      $("#closebtn").on("click",function(){
         $("#model").hide();
       })
-    })
-     //------------------------------------------------------------------------------------------------------------------------------------//
 
 
 
-    //--------------------------------------------------------Add data with ajex--------------------------------------------------------//
+      //--------------------------------------------------------Add data with ajex--------------------------------------------------------//
     $("#adddata").on("click", function(){
       $("#model2").show();
       $.ajax({
@@ -164,6 +190,7 @@ if(isset($_POST['logout'])){
         processData: false,
         success: function(response){
           if(response == 1){
+            swal("Added!", "Data Has been added successfully", "success");
             $("#model2").hide();
             loaddata();
          } else {
@@ -180,6 +207,79 @@ if(isset($_POST['logout'])){
         $("#model2").hide();
       })
 //----------------------------------------------------------------------------------------------------------------------------------------//
+
+//----------------view data with ajex--------------------//
+$(document).on("click" ,".viewbtn",function(){
+  var id = $(this).data("id");
+  $("#model3").show();
+  $.ajax({
+    url:"ajaxview.php",
+    type:"POST",
+    data:{id:id},
+    success: function(data){
+      $("#viewpage").html(data)
+    }
+  })
+})
+$("#closebtn3").on("click",function(){
+        $("#model3").hide();
+      })
+
+//----------------view Resultcard with ajex--------------------//
+$(document).on("click" ,".resultcardbtn",function(){
+  var id = $(this).data("id");
+  $("#model4").show();
+  $.ajax({
+    url:"ajaxresultcard.php",
+    type:"POST",
+    data:{id:id},
+    success: function(data){
+      $("#resultcardpage").html(data)
+    }
+  })
+})
+$("#closebtn4").on("click",function(){
+        $("#model4").hide();
+      })  
+      
+//----------------Copy data with ajax with ajex--------------------//
+$(document).on("click", ".copybtn", function(){
+  swal({
+  title: "Are you sure?",
+  text: "This will copy the current record",
+  icon: "warning",
+  buttons: true,
+  dangerMode: true,
+})
+.then((willDelete) => {
+  if (willDelete) {
+    var id = $(this).data("id");
+        $.ajax({
+          url:"ajaxcopy.php",
+          type:"POST",
+          data:{id:id},
+          success: function(data){
+            if(data == 1 ){
+              loaddata();
+            }
+            else{
+              alert("Failed To Copy Record")
+            }
+          }
+        })
+    swal("Record has been copied successfully", {
+      icon: "success",
+    });
+  } 
+});
+      })
+
+
+})
+
+
+
+
 </script>
 
 </body>
